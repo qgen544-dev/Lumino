@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
+// Load environment variables FIRST
+dotenv.config();
+
 const axios = require('axios');
 const ffmpeg = require('fluent-ffmpeg');
 const multer = require('multer');
@@ -11,20 +15,18 @@ const admin = require('firebase-admin');
 const FormData = require('form-data');
 const Groq = require('groq-sdk');
 
-// Import routes
+// Initialize Groq client
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY
+});
+
+// Import routes AFTER env variables are loaded
 const { router: authRoutes } = require('./routes/auth');
 const pricingRoutes = require('./routes/pricing');
 const paymentRoutes = require('./routes/payment');
 const historyRoutes = require('./routes/history');
 const { verifyToken } = require('./middleware/auth');
 const { checkVideoLimits, checkScriptLimits, updateUsage } = require('./middleware/limits');
-
-// Initialize Groq client
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY
-});
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -1149,6 +1151,7 @@ app.listen(PORT, () => {
   console.log(`🌍 Supported languages: ${SUPPORTED_LANGUAGES.length}`);
   console.log(`📁 Asset upload: Enabled`);
   console.log(`🤖 Groq AI: ${process.env.GROQ_API_KEY ? 'Configured' : 'Not configured'}`);
+  console.log(`💳 Razorpay: ${process.env.RAZORPAY_KEY_ID ? 'Configured' : 'Not configured'}`);
   console.log(`✍️ AI Script Generation: Enabled`);
   console.log(`📁 Upload directory: ${uploadDir}`);
   console.log(`📁 Output directory: ${outputDir}`);
