@@ -491,7 +491,7 @@ app.post('/api/generate-video', verifyToken, checkVideoLimits, async (req, res) 
       aiGenerated: false // Mark as manual generation
     };
     
-    const videoId = await storeVideoUrl(videoData);
+    const storedVideoId = await storeVideoUrl(videoData);
     
     // Update user usage
     await updateUsage(req.user.uid, 'video');
@@ -504,7 +504,7 @@ app.post('/api/generate-video', verifyToken, checkVideoLimits, async (req, res) 
     // Step 9: Return Catbox URL
     res.json({
       success: true,
-      videoId,
+      videoId: storedVideoId,
       videoUrl: catboxUrl, // Direct Catbox URL
       duration: '~45 seconds',
       message: 'Video processed and uploaded to Catbox successfully!',
